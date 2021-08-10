@@ -28,45 +28,45 @@ def coords_to_index(coords):
     return [x_axis_to_index(coords[0]), y_axis_to_index(coords[1])]
 
 # get right up path
-def right_up(board, current, distance):
-    c_x, c_y = coords_to_index(current)
-    return [board[c_y-i-1][c_x+i+1] for i in range(distance)]
+def right_up(board, c, distance):
+    cx, cy = c
+    return [board[cy-i-1][cx+i+1] for i in range(distance)]
 
 # get right down path
-def right_down(board, current, distance):
-    c_x, c_y = coords_to_index(current)
-    return [board[c_y+i+1][c_x+i+1] for i in range(distance)]
+def right_down(board, c, distance):
+    cx, cy = c
+    return [board[cy+i+1][cx+i+1] for i in range(distance)]
 
 
 # get right path
-def right(board, current, distance):
-    c_x, c_y = coords_to_index(current)
-    return [board[c_y][c_x+i+1] for i in range(distance)]
+def right(board, c, distance):
+    cx, cy = c
+    return [board[cy][cx+i+1] for i in range(distance)]
 
 # get left path
-def left(board, current, distance):
-    c_x, c_y = coords_to_index(current)
-    return [board[c_y][c_x-i] for i in range(1, distance+1)]
+def left(board, c, distance):
+    cx, cy = c
+    return [board[cy][cx-i] for i in range(1, distance+1)]
 
 # get up path
-def up(board, current, distance):
-    c_x, c_y = coords_to_index(current)
-    return [board[c_y-i-1][c_x] for i in range(distance)]
+def up(board, c, distance):
+    cx, cy = c
+    return [board[cy-i-1][cx] for i in range(distance)]
 
 # get down path
-def down(board, current, distance):
-    c_x, c_y = coords_to_index(current)
-    return [board[c_y+i+1][c_x] for i in range(distance)]
+def down(board, c, distance):
+    cx, cy = c
+    return [board[cy+i+1][cx] for i in range(distance)]
 
 # get left up path
-def left_up(board, current, distance):
-    c_x, c_y = coords_to_index(current)
-    return [board[c_y-i][c_x-i] for i in range(1, distance+1)]
+def left_up(board, c, distance):
+    cx, cy = c
+    return [board[cy-i][cx-i] for i in range(1, distance+1)]
 
 # get left down path
-def left_down(board, current, distance):
-    c_x, c_y = coords_to_index(current)
-    return [board[c_y+i][c_x-i] for i in range(1, distance+1)]
+def left_down(board, c, distance):
+    cx, cy = c
+    return [board[cy+i][cx-i] for i in range(1, distance+1)]
 
 def get_path_between_points(c, n):
     cx, cy = c
@@ -89,11 +89,11 @@ def get_path_between_points(c, n):
         return [[cx-i, cy+i] for i in range(cx-nx+1)]
 
 # get valid moves vertical and horizontal (for rooks and queens)
-def valid_vertical_horizontal_moves(b, current, side):
+def valid_vertical_horizontal_moves(b, c, side):
     valid_moves = []
-    cx, cy = coords_to_index(current)
+    cx, cy = c
     board = b.board
-    paths = [up(board, current, cy), down(board, current, 7-cy), right(board, current, 8-cx), left(board, current, cx-1)]
+    paths = [up(board, c, cy), down(board, c, 7-cy), right(board, c, 8-cx), left(board, c, cx-1)]
     for i in range(len(paths[0])):
         if paths[0][i] == '. ':
             valid_moves.append([cx, cy-i-1])
@@ -132,9 +132,9 @@ def valid_vertical_horizontal_moves(b, current, side):
     
     return valid_moves
 
-def valid_diagonal_moves(b, current, side):
+def valid_diagonal_moves(b, c, side):
     valid_moves = []
-    cx, cy = coords_to_index(current)
+    cx, cy = c
     board = b.board
     dr, dl, down = 8-cx, cx-1, 7-cy
     drd, dld = dr, dl
@@ -142,10 +142,10 @@ def valid_diagonal_moves(b, current, side):
     if cy < dl: dl = cy
     if down < drd: drd = down
     if down < dld: dld = down
-    ru = right_up(board, current, dr)
-    lu = left_up(board, current, dl)
-    rd = right_down(board, current, drd)
-    ld = left_down(board, current, dld)
+    ru = right_up(board, c, dr)
+    lu = left_up(board, c, dl)
+    rd = right_down(board, c, drd)
+    ld = left_down(board, c, dld)
     for i in range(len(ru)):
         if ru[i] == '. ':
             valid_moves.append([cx+1+i, cy-1-i])
@@ -178,50 +178,50 @@ def valid_diagonal_moves(b, current, side):
 
 # knight moves
 # these functions return the pieces in each possible knight move
-def l_up_right(board, current):
-    cx, cy = coords_to_index(current)
+def l_up_right(board, c):
+    cx, cy = c
     return [board[cy-2][cx-len(board[cy-2])+1], board[cy-1], [cx-len(board[cy-1])+2]]
 
-def l_up_left(board, current):
-    cx, cy = coords_to_index(current)
+def l_up_left(board, c):
+    cx, cy = c
     return [board[cy-2][cx-1], board[cy-1][cx-2]]
 
-def l_down_right(board, current):
-    cx, cy = coords_to_index(current)
+def l_down_right(board, c):
+    cx, cy = c
     return [board[cy+2][cx-len(board[cy+2])+1], board[cy+1], [cx-len(board[cy+1])+2]]
 
-def l_down_left(board, current):
-    cx, cy = coords_to_index(current)
+def l_down_left(board, c):
+    cx, cy = c
     return [board[cy+2][cx-1], board[cy+1][cx-2]]
 
 # get valid knight moves
-def knight_logic(board, current, side):
+def knight_logic(board, c, side):
     valid_moves = []
     b = board.board
-    cx, cy = coords_to_index(current)
-    if l_up_right(b, current)[0] not in side:
+    cx, cy = c
+    if l_up_right(b, c)[0] not in side:
         valid_moves.append([cx+1, cy-2])
-    if l_up_right(b, current)[1] not in side:
+    if l_up_right(b, c)[1] not in side:
         valid_moves.append([cx+2, cy-1])
-    if l_up_left(b, current)[0] not in side:
+    if l_up_left(b, c)[0] not in side:
         valid_moves.append([cx-1, cy-2])
-    if l_up_left(b, current)[1] not in side:
+    if l_up_left(b, c)[1] not in side:
         valid_moves.append([cx-2, cy-1])
-    if l_down_right(b, current)[0] not in side:
+    if l_down_right(b, c)[0] not in side:
         valid_moves.append([cx+1, cy+2])
-    if l_down_right(b, current)[1] not in side:
+    if l_down_right(b, c)[1] not in side:
         valid_moves.append([cx+2, cy+1])
-    if l_down_left(b, current)[0] not in side:
+    if l_down_left(b, c)[0] not in side:
         valid_moves.append([cx-1, cy+2])
-    if l_down_left(b, current)[1] not in side:
+    if l_down_left(b, c)[1] not in side:
         valid_moves.append([cx-2, cy+1])
     return valid_moves
 
-def king_logic(b, current, side):
+def king_logic(b, c, side):
     valid_moves = []
-    cx, cy = coords_to_index(current)
+    cx, cy = c
     board = b.board
-    u, d, r, l = up(board, current, 1)[0], down(board, current, 1)[0], right(board, current, 1)[0], left(board, current, 1)[0]
+    u, d, r, l = up(board, c, 1)[0], down(board, c, 1)[0], right(board, c, 1)[0], left(board, c, 1)[0]
     if u == '. ' or u not in side:
         valid_moves.append([cx, cy-1])
     if d == '. ' or d not in side:
@@ -230,7 +230,7 @@ def king_logic(b, current, side):
         valid_moves.append([cx-1, cy])
     if r == '. ' or r not in side:
         valid_moves.append([cx+1, cy])
-    ru, lu, rd, ld = right_up(board, current, 1)[0], left_up(board, current, 1)[0], right_down(board, current, 1)[0], left_down(board, current, 1)[0]
+    ru, lu, rd, ld = right_up(board, c, 1)[0], left_up(board, c, 1)[0], right_down(board, c, 1)[0], left_down(board, c, 1)[0]
     if ru == '. ' or ru not in side:
         valid_moves.append([cx+1, cy-1])
     if lu == '. ' or lu not in side:
@@ -241,22 +241,17 @@ def king_logic(b, current, side):
         valid_moves.append([cx-1, cy+1])
     return valid_moves
 
-def split_str(w):
-    return [l for l in w]
-
 def get_location(b, c, pre_parsed=False):
-    if pre_parsed:
-        if c[0] > 8 or c[1] > 7: return False
-        if c[0] < 0 or c[1] < 0: return False
-        return b[c[1]][c[0]] 
-    cx , cy = coords_to_index(c)
-    return b[cy][cx]
+    cx, cy = c
+    if cx > 8 or cy > 7: return False
+    if cx < 0 or cy < 0: return False
+    return b[cy][cx] 
 
 def check_detection(b, side):
     m = []
     board = b.board
     k = 'k ' if side == b.black else 'K '
-    side  = b.white if side == b.black else b.black
+    side = b.white if side == b.black else b.black
     for y in range(len(board)):
         for x in range (len(board[y])):
             p = board[y][x]

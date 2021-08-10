@@ -26,6 +26,13 @@ class board:
             ['', '', '', '', '', '', '', ''],
             ['   ', 'a ', 'b ', 'c ', 'd ', 'e ', 'f ', 'g ', 'h']
         ]
+
+    # return list of valid moves for current turn
+    def get_valid_moves(self, turn):
+        valid_moves = []
+        for piece in (self.white if turn else self.black):
+            valid_moves += [[piece.position, x] for x in piece.get_valid_moves(self, piece.position)]
+        return valid_moves
     
     # draw board
     def draw(self):
@@ -42,17 +49,17 @@ class board:
     
     # update the board matrix when a move is determined to be valid
     def update_board(self, current, new):
-        current_index_x, current_index_y  = coords_to_index(current)
-        new_index_x, new_index_y = coords_to_index(new)
-        current_location = self.board[current_index_y][current_index_x]
-        new_location = self.board[new_index_y][new_index_x]
+        cx, cy = current
+        nx, ny = new
+        current_location = self.board[cy][cx]
+        new_location = self.board[ny][nx]
         if new_location != '. ':
             if new_location in self.white:
                 self.white.remove(new_location)
             elif new_location in self.black:
                 self.black.remove(new_location)
             new_location = '. '
-        self.board[new_index_y][new_index_x] = current_location
-        self.board[current_index_y][current_index_x] = new_location
+        self.board[ny][nx] = current_location
+        self.board[cy][cx] = new_location
         self.draw()
 
